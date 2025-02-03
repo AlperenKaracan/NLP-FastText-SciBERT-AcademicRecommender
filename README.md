@@ -94,34 +94,34 @@ Makale Öneri Sistemi, kullanıcıların seçtiği ilgi alanlarına göre akadem
 ## Uygulama Görselleri
 
 ### **1. Anasayfa**
-![Anasayfa](images/anasayfa.png)
+![Anasayfa](makaleOnerme/images/anasayfa.png)
 
 ### **2. Karanlık Modda Anasayfa**
-![Karanlık Anasayfa](images/kanasayfa.png)
+![Karanlık Anasayfa](makaleOnerme/images/kanasayfa.png)
 
 ### **3. Kayıt Ekranı**
-![Kayıt Ekranı](images/kayitekrani.png)
+![Kayıt Ekranı](makaleOnerme/images/kayitekrani.png)
 
 ### **4. Karanlık Modda Kayıt Ekranı**
-![Karanlık Kayıt Ekranı](images/kkayitekrani.png)
+![Karanlık Kayıt Ekranı](makaleOnerme/images/kkayitekrani.png)
 
 ### **5. Favoriler**
-![Favoriler](images/favoriler.png)
+![Favoriler](makaleOnerme/images/favoriler.png)
 
 ### **6. Karanlık Modda Favoriler**
-![Karanlık Favoriler](images/kfavoriler.png)
+![Karanlık Favoriler](makaleOnerme/images/kfavoriler.png)
 
 ### **7. Makale Detay**
-![Makale Detay](images/makaledetay.png)
+![Makale Detay](makaleOnerme/images/makaledetay.png)
 
 ### **8. Karanlık Modda Makale Detay**
-![Karanlık Makale Detay](images/kmakaledetay.png)
+![Karanlık Makale Detay](makaleOnerme/images/kmakaledetay.png)
 
 ### **9. Profil Düzenle**
-![Profil Düzenle](images/profilduzenle.png)
+![Profil Düzenle](makaleOnerme/images/profilduzenle.png)
 
 ### **10. Karanlık Modda Profil Düzenle**
-![Karanlık Profil Düzenle](images/kprofilduzenle.png)
+![Karanlık Profil Düzenle](makaleOnerme/images/kprofilduzenle.png)
 
 ---
 
