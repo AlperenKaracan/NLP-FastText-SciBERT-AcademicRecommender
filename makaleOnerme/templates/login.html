@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Giriş Yap / Kayıt Ol{% endblock %}
+
+{% block extra_head %}
+  {{ super() }}
+  <style>
+    .auth-card {
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+    .auth-header {
+      padding: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .header-login {
+      background: linear-gradient(135deg, #28a745, #218838);
+    }
+    .header-register {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+    }
+    .auth-body {
+      padding: 20px;
+    }
+    .form-label {
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    .form-control {
+      border-radius: 0.5rem;
+      border: 1px solid #ced4da;
+      box-shadow: none;
+      font-size: 1rem;
+    }
+    .form-control:focus {
+      border-color: var(--link-color);
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    }
+    .checkbox-group .col-6 {
+      margin-bottom: 10px;
+    }
+    .btn-auth {
+      border-radius: 0.5rem;
+      font-weight: 600;
+      padding: 10px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row gy-4">
+    <!-- Giriş Yap Kartı -->
+    <div class="col-md-6">
+      <div class="card auth-card">
+        <div class="auth-header header-login">
+          Giriş Yap
+        </div>
+        <div class="card-body auth-body">
+          <form action="{{ url_for('main.login') }}" method="post">
+            <div class="mb-3">
+              <label for="login_username" class="form-label">Kullanıcı Adı</label>
+              <input type="text" class="form-control" id="login_username" name="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="login_password" class="form-label">Şifre</label>
+              <input type="password" class="form-control" id="login_password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-success btn-auth w-100">Giriş Yap</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Kayıt Ol Kartı -->
+    <div class="col-md-6">
+      <div class="card auth-card">
+        <div class="auth-header header-register">
+          Kayıt Ol
+        </div>
+        <div class="card-body auth-body">
+          <form action="{{ url_for('main.register') }}" method="post">
+            <div class="mb-3">
+              <label for="register_username" class="form-label">Kullanıcı Adı</label>
+              <input type="text" class="form-control" id="register_username" name="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="register_password" class="form-label">Şifre</label>
+              <input type="password" class="form-control" id="register_password" name="password" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">İlgi Alanları</label>
+              <div class="row checkbox-group">
+                {% set interests = dynamic_interests if dynamic_interests is defined else [] %}
+                {% for key in interests %}
+                  <div class="col-6">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="interests" id="interest_{{ loop.index }}" value="{{ key }}">
+                      <label class="form-check-label" for="interest_{{ loop.index }}">{{ key }}</label>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-auth w-100">Kayıt Ol</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

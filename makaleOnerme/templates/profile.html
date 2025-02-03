@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Profil Düzenle - {{ user_data.username }}{% endblock %}
+
+{% block extra_head %}
+  {{ super() }}
+  <style>
+    .profile-card {
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: var(--card-shadow);
+      background-color: var(--card-bg);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+    .profile-header {
+      background: linear-gradient(135deg, #FF5F6D, #FFC371);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.75rem;
+      font-weight: 600;
+    }
+    .profile-body {
+      padding: 20px;
+    }
+    .form-label {
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    .form-control {
+      border-radius: 0.5rem;
+      border: 1px solid #ced4da;
+      box-shadow: none;
+      font-size: 1rem;
+    }
+    .form-control:focus {
+      border-color: var(--link-color);
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    }
+    .checkbox-group .col-6 {
+      margin-bottom: 10px;
+    }
+    .form-check-input {
+      margin-top: 0.3rem;
+      margin-right: 0.5rem;
+    }
+    .form-check-label {
+      font-size: 0.95rem;
+      color: var(--text-color);
+    }
+    .btn-auth {
+      border-radius: 0.5rem;
+      font-weight: 600;
+      padding: 10px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="text-center mb-4">
+    <h2>Profil Düzenle</h2>
+  </div>
+  <div class="card profile-card mx-auto" style="max-width: 600px;">
+    <div class="profile-header">
+      {{ user_data.username }}
+    </div>
+    <div class="card-body profile-body">
+      <form action="{{ url_for('main.profile', user_ID=user_data.user_ID) }}" method="post">
+        <div class="mb-3">
+          <label for="username" class="form-label">Kullanıcı Adı</label>
+          <input type="text" class="form-control" id="username" name="username" value="{{ user_data.username }}" readonly>
+        </div>
+        <div class="mb-3">
+          <label for="new_password" class="form-label">Yeni Şifre</label>
+          <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Şifre değiştirmek istemiyorsanız boş bırakın">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">İlgi Alanları</label>
+          <div class="row checkbox-group">
+            {% set interests = dynamic_interests if dynamic_interests is defined else [] %}
+            {% for key in interests %}
+              <div class="col-6">
+                <div class="form-check">
+                  {% set checked = key in user_data.interests %}
+                  <input class="form-check-input" type="checkbox" name="interests" id="interest_{{ loop.index }}" value="{{ key }}" {% if checked %}checked{% endif %}>
+                  <label class="form-check-label" for="interest_{{ loop.index }}">{{ key }}</label>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-auth w-100">Güncelle</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Favorilerim{% endblock %}
+
+{% block extra_head %}
+  {{ super() }}
+  <style>
+    .favorites-section {
+      padding: 20px 0;
+    }
+    .favorites-header {
+      background: linear-gradient(135deg, #FF5F6D, #FFC371);
+      color: #fff;
+      padding: 15px;
+      border-top-left-radius: 0.75rem;
+      border-top-right-radius: 0.75rem;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .favorites-card {
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background-color: var(--card-bg);
+      transition: transform 0.2s ease-in-out;
+      margin-bottom: 20px;
+    }
+    .favorites-card:hover {
+      transform: translateY(-3px);
+    }
+    .favorites-body {
+      padding: 20px;
+    }
+    .favorite-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--text-color);
+    }
+    .keyphrase-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .keyphrase-badge {
+      font-size: 0.8rem;
+      padding: 0.4em 0.7em;
+      border-radius: 0.5rem;
+      transition: transform 0.15s ease-in-out;
+      display: inline-block;
+    }
+    .keyphrase-badge:hover {
+      transform: scale(1.05);
+    }
+    .keyphrase-normal {
+      background-color: #cce5ff;
+      color: #004085;
+    }
+    .keyphrase-abstractive {
+      background-color: #ffeeba;
+      color: #856404;
+    }
+    .favorites-footer {
+      padding: 10px 15px;
+      background-color: var(--bg-color);
+      font-size: 0.9rem;
+      text-align: center;
+      border-top: 1px solid #e9ecef;
+    }
+    .btn-fav-detail {
+      font-size: 0.9rem;
+      margin-right: 5px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="favorites-section">
+  <div class="text-center mb-4">
+    <h2>Favori Makalelerim</h2>
+  </div>
+  <div class="row gy-4">
+    {% if favorites %}
+      {% for article in favorites %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card favorites-card h-100">
+            <div class="favorites-header">
+              Favori Makale
+            </div>
+            <div class="card-body favorites-body">
+              <h5 class="favorite-title">
+                {{ article.document_string[:100] }}{% if article.document_string|length > 100 %}...{% endif %}
+              </h5>
+              {% if article.extractive_keyphrases %}
+                <div class="keyphrase-container">
+                  {% for kp in article.extractive_keyphrases %}
+                    <span class="keyphrase-badge keyphrase-normal">{{ kp }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+              <a href="{{ url_for('main.article_page', article_ID=get_article_id(article)) }}" class="btn btn-outline-primary btn-fav-detail">Detay</a>
+              <a href="{{ url_for('main.remove_favorite', user_ID=session.get('user_id'), article_ID=get_article_id(article)) }}" class="btn btn-danger btn-fav-detail">Favoriden Çıkar</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <p class="text-center text-muted">Henüz favori makaleniz yok.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

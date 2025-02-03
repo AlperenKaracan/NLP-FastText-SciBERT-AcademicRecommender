@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}{{ article_data.document_title }}{% endblock %}
+
+{% block extra_head %}
+  {{ super() }}
+  <style>
+    .article-card {
+      margin-bottom: 30px;
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: var(--card-shadow);
+      background-color: var(--card-bg);
+      overflow: hidden;
+    }
+    .article-header {
+      background: linear-gradient(135deg, #0062E6, #33AEFF);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.75rem;
+      font-weight: 600;
+    }
+    .article-body {
+      padding: 20px;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-color);
+    }
+    .section-title {
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    .vector-box {
+      background-color: var(--card-bg);
+      padding: 10px;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      color: var(--text-color);
+    }
+    .toggle-link {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--link-color);
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .toggle-link:hover {
+      text-decoration: underline;
+    }
+    .keyphrase-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .badge {
+      font-size: 0.85rem;
+      padding: 0.5em 0.75em;
+      border-radius: 0.5rem;
+      display: inline-block;
+    }
+    .keyphrase-normal {
+      background-color: #cce5ff;
+      color: #004085;
+    }
+    .keyphrase-abstractive {
+      background-color: #ffeeba;
+      color: #856404;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="card article-card">
+  <div class="article-header">
+    <h2 class="mb-0">{{ article_data.document_title }}</h2>
+  </div>
+  <div class="card-body article-body">
+    <p class="text-muted fst-italic">{{ article_data.abstract }}</p>
+    <hr>
+    <h5 class="section-title">İçerik</h5>
+    <p>{{ article_data.document_string }}</p>
+    <hr>
+    {% if article_data.extractive_keyphrases %}
+      <h5 class="section-title">Keyphrases</h5>
+      <div class="keyphrase-container">
+        {% for kp in article_data.extractive_keyphrases %}
+          <span class="badge keyphrase-normal">{{ kp }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if article_data.abstractive_keyphrases %}
+      <hr>
+      <h5 class="section-title">Abstractive Keyphrases</h5>
+      <div class="keyphrase-container">
+        {% for tag in article_data.abstractive_keyphrases %}
+          <span class="badge keyphrase-abstractive">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <hr>
+    <h5 class="section-title">Vektör Değerleri</h5>
+    <p><strong>FastText Vector:</strong>
+      <div class="vector-box">
+        <span class="vector-short" id="ft-short">
+          {{ article_data.document_FastText_vector|tojson|truncate(100, True, '...') }}
+        </span>
+        {% if article_data.document_FastText_vector|tojson|length > 100 %}
+          <span class="toggle-link" onclick="toggleVector('ft', this)">Devamını göster</span>
+          <div class="vector-full" id="ft-full" style="display:none;">
+            {{ article_data.document_FastText_vector|tojson }}
+          </div>
+        {% endif %}
+      </div>
+    </p>
+    <p><strong>SciBERT Vector:</strong>
+      <div class="vector-box">
+        <span class="vector-short" id="sb-short">
+          {{ article_data.document_sciBERT_vector|tojson|truncate(100, True, '...') }}
+        </span>
+        {% if article_data.document_sciBERT_vector|tojson|length > 100 %}
+          <span class="toggle-link" onclick="toggleVector('sb', this)">Devamını göster</span>
+          <div class="vector-full" id="sb-full" style="display:none;">
+            {{ article_data.document_sciBERT_vector|tojson }}
+          </div>
+        {% endif %}
+      </div>
+    </p>
+    <hr>
+    <div class="d-flex justify-content-between mb-3">
+      <a href="{{ url_for('main.article_liked', user_ID=session.get('user_id'), article_ID=get_article_id(article_data)) }}" class="btn btn-success">Favoriye Ekle</a>
+    </div>
+    <h5 class="section-title">Yorumlar</h5>
+    <div id="comments">
+      {% for comment in comments %}
+        <div class="mb-2">
+          <strong>{{ comment.username }}:</strong> {{ comment.comment }}
+        </div>
+      {% endfor %}
+    </div>
+    <form action="{{ url_for('main.add_comment') }}" method="post">
+      <input type="hidden" name="article_id" value="{{ get_article_id(article_data) }}">
+      <div class="mb-3">
+        <textarea class="form-control" name="comment" rows="3" placeholder="Yorumunuzu yazın..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Yorum Yap</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+  {{ super() }}
+  <script>
+    function toggleVector(prefix, linkEl) {
+      var shortEl = document.getElementById(prefix + "-short");
+      var fullEl = document.getElementById(prefix + "-full");
+      if (fullEl.style.display === "none") {
+        fullEl.style.display = "block";
+        shortEl.style.display = "none";
+        linkEl.textContent = "Gizle";
+      } else {
+        fullEl.style.display = "none";
+        shortEl.style.display = "block";
+        linkEl.textContent = "Devamını göster";
+      }
+    }
+  </script>
+{% endblock %}
